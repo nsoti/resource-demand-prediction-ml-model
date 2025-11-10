@@ -1,4 +1,4 @@
-# Resource Occupancy Rate Forecasting with DeepAR
+# Resource Demand Forecasting with DeepAR
 
 This notebook implements a time series forecasting solution using Amazon SageMaker's DeepAR algorithm to predict occupancy rates for educational resources (libraries, computer labs, study rooms, etc.).
 
