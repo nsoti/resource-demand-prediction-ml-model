@@ -1,4 +1,4 @@
-# Campus Demand Forecasting with DeepAR
+# Campus Demand Forecasting with Amazon SageMaker
 
 This notebook implements a time series forecasting solution using Amazon SageMaker's DeepAR algorithm to predict occupancy rates for educational resources (libraries, computer labs, study rooms, etc.).
 
