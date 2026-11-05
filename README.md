@@ -16,7 +16,7 @@ The solution trains a deep learning model to forecast resource occupancy 24 hour
 
 ## Data Requirements
 
-The notebook expects a parquet file with the following columns:
+The notebook expects a `campus_ml_dataset` table with the following columns:
 
 ### Required Columns
 - `usage_id` - Unique identifier for each usage record
@@ -48,34 +48,36 @@ The notebook expects a parquet file with the following columns:
 ## Setup
 
 ### Prerequisites
-- Amazon SageMaker notebook instance or SageMaker Studio
-- IAM role with permissions for:
-  - S3 read/write access
+- JupyterLab in an Amazon SageMaker Unified Studio project (SageMaker Distribution 4.x image)
+- Project IAM role with permissions for:
+  - S3 read/write access to the project bucket
   - SageMaker training and hosting
-- Python 3.8+
+- Python 3.10+
 
 ### Required Libraries
+All preinstalled in the SageMaker Distribution image:
 ```python
 pandas
 numpy
 boto3
-sagemaker
+sagemaker>=3        # SageMaker Python SDK v3 (ModelTrainer, sagemaker-core resources)
+sagemaker-studio    # Unified Studio project, connections and Athena helpers
 matplotlib
 scikit-learn
 ```
 
 ## Usage
 
-### 1. Configure Data Path
-Update the S3 path to your parquet file:
+### 1. Configure the Data Source
+Set the Glue database that holds your subscribed `campus_ml_dataset` table. The notebook reads it with Amazon Athena through the project's `project.athena` connection:
 ```python
-s3_path = 's3://your-bucket/path/to/data.parquet'
+GLUE_DATABASE = '<your_glue_database>'
 ```
 
 ### 2. Run the Notebook
 Execute cells sequentially:
 1. **Setup and Imports** - Initialize SageMaker session
-2. **Load Data** - Read parquet file from S3
+2. **Load Data** - Query the `campus_ml_dataset` table with Amazon Athena
 3. **Preprocessing** - Convert data types and create lag features
 4. **Prepare for DeepAR** - Format data as JSON for training
 5. **Train Model** - Launch SageMaker training job
@@ -139,9 +141,11 @@ For each selected resource, the model generates:
 - **Important**: Delete endpoint when not in use to avoid charges
 
 ### Cleanup
-Uncomment and run the cleanup cell to delete the endpoint:
+Run the last cell to delete the endpoint, endpoint configuration and model:
 ```python
-predictor.delete_endpoint()
+endpoint.delete()
+endpoint_config.delete()
+model.delete()
 ```
 
 ## Troubleshooting
